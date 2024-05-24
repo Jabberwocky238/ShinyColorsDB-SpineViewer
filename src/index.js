@@ -1,10 +1,8 @@
 import 'pixi-spine' // Do this once at the very start of your code. This registers the loader!
-import * as PIXI from 'pixi.js';
 import './style.css'
+import * as PIXI from 'pixi.js';
 import { Spine } from 'pixi-spine';
 
-// let app, urlFlag = false;
-// const dropLoader = PIXI.Assets, cont = new PIXI.Container();
 const SML0 = "sml_cloth0", SML1 = "sml_cloth1", BIG0 = "big_cloth0", BIG1 = "big_cloth1";
 const urlParams = new URLSearchParams(window.location.search);
 const cont = new PIXI.Container();
@@ -12,10 +10,9 @@ const cont = new PIXI.Container();
 // State
 let isContinuousShootingEnabled = false
 let app, urlFlag = false;
+
 const idolMap = new Map();
 const spineMap = new Map();
-
-// PIXI.settings.RENDER_OPTIONS.hello = false;
 
 const migrateMap = {
     "sml_cloth0": "cb",
@@ -24,98 +21,6 @@ const migrateMap = {
     "big_cloth1": "stand_costume",
 }
 
-// function dropHandler(event) {
-//     event.preventDefault();
-//     let pathJSON, pathAtlas, pathTexture;
-//     if (event.dataTransfer.items) {
-//         for (let item of event.dataTransfer.items) {
-//             if (item.kind === "file") {
-//                 const file = item.getAsFile();
-//                 const blobURL = window.URL.createObjectURL(file);
-//                 if (file.name.endsWith(".atlas")) {
-//                     pathAtlas = blobURL;
-//                 } else if (file.name.endsWith(".png") || file.name.endsWith(".webp")) {
-//                     pathTexture = file;
-//                 } else if (file.name.endsWith(".json")) {
-//                     pathJSON = blobURL;
-//                 }
-//             }
-//         }
-//     } else {
-//         for (let file of event.dataTransfer.files) {
-//             const blobURL = window.URL.createObjectURL(file);
-//             if (file.name.endsWith(".atlas")) {
-//                 pathAtlas = blobURL;
-//             } else if (file.name.endsWith(".png") || file.name.endsWith(".webp")) {
-//                 pathTexture = file;
-//             } else if (file.name.endsWith(".json")) {
-//                 pathJSON = blobURL;
-//             }
-//         }
-//     }
-
-//     if (pathAtlas && pathTexture && pathJSON) {
-//         PIXI.Assets.add({
-//             src: pathJSON,
-//             alias: "dropJson",
-//             format: 'json',
-//             loadParser: 'loadJson'
-//         });
-//         PIXI.Assets.add({
-//             src: pathAtlas,
-//             alias: "dropAtlas",
-//             format: 'text',
-//             loadParser: 'loadTxt'
-//         });
-//         PIXI.Assets.load(["dropJson", "dropAtlas"]).then(() => {
-//             renderByDrop(pathTexture);
-//         });
-//     }
-//     else {
-//         alert("missing files!");
-//     }
-// }
-
-// function dragOverHandler(event) {
-//     event.preventDefault();
-// }
-
-// async function renderByDrop(dataTexture) {
-//     const rawJson = PIXI.Assets.get("dropJson");
-//     const rawAtlas = PIXI.Assets.get("dropAtlas");
-//     const rawTexture = await blobToBase64(dataTexture);
-//     //console.log(rawJson, rawAtlas, rawTexture);
-//     const spineAtlas = new PIXI.spine.TextureAtlas(rawAtlas, (_, callback) => {
-//         callback(PIXI.BaseTexture.from(rawTexture));
-//     });
-//     //const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
-//     //const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
-//     const spineJsonParser = new PIXI.spine.SkeletonJson();
-//     const spineData = spineJsonParser.readSkeletonData(spineAtlas, rawJson);
-//     await setupAnimationList(spineData);
-// }
-
-// function toastInit() {
-//     let toastTrigger = document.getElementById('copyToClipboard');
-//     let toastLiveExample = document.getElementById('copied');
-//     if (toastTrigger) {
-//         toastTrigger.addEventListener('click', function () {
-//             let toast = new bootstrap.Toast(toastLiveExample);
-
-//             toast.show();
-//         });
-//     }
-// }
-
-// function tooltipInit() {
-//     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-//     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-// }
-
-// function toMobileUI() {
-//     window.location.href = "https://mspine.shinycolors.moe";
-// }
-
 async function init() {
     if (!PIXI.utils.isWebGLSupported()) {
         const hardwareAccel = new bootstrap.Modal(document.getElementById("divWebGL"));
@@ -123,7 +28,7 @@ async function init() {
         console.log('WebGL is not supported in this browser.');
     }
 
-    const canvas = document.getElementById("canvas"), resetBtn = document.getElementById("resetAnimation");
+    const canvas = document.getElementById("canvas")
 
     app = new PIXI.Application({
         view: canvas,
@@ -137,12 +42,6 @@ async function init() {
         app.renderer.backgroundColor = String(event.target.value).replace(/#/, "0X");
     };
 
-    // const continuousShootingModeSwitch = document.getElementById("continuousShootingModeSwitch")
-    // continuousShootingModeSwitch.addEventListener("change", (event) => {
-    //     isContinuousShootingEnabled = event.target.checked
-    //     // console.info(`enableContinuousShooting:${isContinuousShootingEnabled}`)
-    // })
-
     console.log("111")
     fetch("https://api.shinycolors.moe/spine/idollist").then(async (response) => {
         const idolInfo = await response.json();
@@ -153,19 +52,6 @@ async function init() {
         await setupIdolList(idolInfoMap);
     });
 
-    _hello();
-}
-
-function _hello() {
-    const log = [
-        `\n\n %c  %c   ShinyColors Spine Viewer   %c  %c  https://github.com/ShinyColorsDB/ShinyColorsDB-SpineViewer  %c \n\n`,
-        'background: #28de10; padding:5px 0;',
-        'color: #28de10; background: #030307; padding:5px 0;',
-        'background: #28de10; padding:5px 0;',
-        'background: #5eff84; padding:5px 0;',
-        'background: #28de10; padding:5px 0;',
-    ];
-    console.log(...log);
 }
 
 async function setupIdolList(idolInfo) {
@@ -390,7 +276,7 @@ async function testAndLoadAnimation(enzaId, type, flag = false) {
             //     spineMap.set(`${enzaId}/${type}`, resource);
             //     await setupAnimationList(resource);
             // });
-            const texture = await PIXI.Assets.load('http://localhost:5173/data.json');
+            const texture = await PIXI.Assets.load('/data.json');
             spineMap.set(`${enzaId}/${type}`, texture);
             console.log("texture", texture)
             await setupAnimationList(texture);
@@ -403,78 +289,34 @@ async function testAndLoadAnimation(enzaId, type, flag = false) {
 
 async function setupAnimationList(spineData) {
     console.log("666")
-    const animationList = document.getElementById("divAnimationBody");
-    animationList.innerHTML = "";
 
     const defaultAnimation = "wait";
 
     // let currentSpine = new PIXI.spine.Spine(spineData);
     console.log(spineData)
-    const currentSpine = new Spine(spineData.spineData);
-    console.log(spineData)
-    let hasWait = false;
+    const spine = new Spine(spineData.spineData);
+    console.log(spine)
 
     try {
-        currentSpine.skeleton.setSkinByName("normal");
+        spine.skeleton.setSkinByName("normal");
     } catch (e) {
-        currentSpine.skeleton.setSkinByName("default");
+        spine.skeleton.setSkinByName("default");
     }
-
+    
+    console.log(spine.state.data)
+    if(spine.state.hasAnimation(defaultAnimation)) {
+        // run forever, little boy!
+        spine.state.setAnimation(0, defaultAnimation, true);
+        
+        // dont run too fast
+        // spine.state.timeScale = 0.1;
+        // update yourself
+        spine.autoUpdate = true;
+    }
     // add the animation to the scene and render...
-    app.stage.addChild(currentSpine);
+    app.stage.addChild(spine);
 
-    // for (let [index, animation] of (spineData.animations).entries()) {
-    //     const div = document.createElement("div"),
-    //         input = document.createElement("input"),
-    //         label = document.createElement("label");
-    //     const name = animation.name;
-
-    //     input.setAttribute("type", "checkbox");
-    //     input.setAttribute("name", name);
-    //     input.setAttribute("id", name);
-    //     input.setAttribute("trackNo", index);
-    //     input.classList.add("form-check-input", "animationElement");
-
-    //     if (name == defaultAnimation) {
-    //         input.setAttribute("checked", true);
-    //         currentSpine.state.setAnimation(index, defaultAnimation, true);
-    //         hasWait = true;
-    //     }
-
-    //     input.addEventListener('change', (e) => {
-    //         animationOnChange(input, index, currentSpine);
-    //     });
-
-    //     label.setAttribute("for", name);
-    //     label.textContent = name;
-    //     label.classList.add("form-check-label");
-
-    //     div.appendChild(input);
-    //     div.appendChild(label);
-
-    //     div.classList.add("col-6", "form-check");
-    //     animationList.appendChild(div);
-    // }
-
-    if (!hasWait) {
-        // document.getElementById(currentSpine.spineData.animations[0].name).checked = true;
-        currentSpine.state.setAnimation(0, currentSpine.spineData.animations[0].name, true);
-    }
-
-    await renderToStage(currentSpine);
-}
-
-function animationOnChange(theInput, trackNo, currentSpine) {
-    if (theInput.checked) {
-        const theAnimation = theInput.getAttribute("name");
-        currentSpine.state.setAnimation(trackNo, theAnimation, true);
-    }
-    else {
-        currentSpine.state.clearTrack(trackNo);
-    }
-    currentSpine.skeleton.setToSetupPose();
-    currentSpine.update(0);
-    currentSpine.autoUpdate = true;
+    await renderToStage(spine);
 }
 
 function blobToBase64(blob) {
@@ -484,11 +326,13 @@ function blobToBase64(blob) {
         reader.readAsDataURL(blob);
     });
 }
+
 const clearState = (spine) => {
     spine.state.clearTracks();
     spine.skeleton.setToSetupPose();
     spine.lastTime = null;
 };
+
 async function renderToStage(currentSpine) {
     if (isContinuousShootingEnabled) { clearState(currentSpine) }
     cont.removeChild(cont.children[0]);
@@ -520,53 +364,5 @@ async function renderToStage(currentSpine) {
     if (isContinuousShootingEnabled) { await saveImage(); }
 }
 
-function resetAllAnimation() {
-    let hasWait = false;
-    for (let k of document.getElementsByClassName("animationElement")) {
-        if (k.getAttribute("name") == "wait") {
-            hasWait = true;
-            k.checked = true;
-        }
-        else {
-            k.checked = false;
-        }
-        k.dispatchEvent(new Event("change"));
-    }
 
-    if (!hasWait) {
-        const first = document.getElementsByClassName("animationElement")[0];
-        first.checked = true;
-        first.dispatchEvent(new Event("change"));
-    }
-}
-
-function copyLinkToClipboard() {
-    const idolId = document.getElementById("idolList").value;
-    const dressList = document.getElementById("dressList");
-    const dressType = document.getElementById("typeList").value;
-    const enzaId = dressList.options[dressList.selectedIndex].getAttribute("enzaId");
-    const link = `https://spine.shinycolors.moe/?idolId=${idolId}&enzaId=${enzaId}&dressType=${dressType}`;
-    navigator.clipboard.writeText(link);
-}
-
-async function saveImage() {
-    const renderer = app.renderer;
-    const image = await renderer.extract.image(cont);
-    const anchor = document.createElement('a');
-    const idolName = document.getElementById("idolList").selectedOptions[0].text;
-    const optionElement = document.getElementById("dressList").selectedOptions[0];
-    const dressCategory = optionElement.parentNode.label;
-    const dressName = optionElement.text;
-    const dressType = document.getElementById("typeList").selectedOptions[0].text;
-    const fileName = `${idolName}-${dressCategory}-${dressName}-${dressType}.png`;
-    // Windows: <>:"/\|?*
-    // macOS/Linux : /
-    const invalidRagex = /[<>:"\/\\|?*\x00-\x1F]/g;
-    const validFileName = fileName.replace(invalidRagex, '_');
-
-    anchor.download = validFileName;
-    anchor.href = image.src;
-    // Trigger a click event on the anchor element to initiate the download
-    anchor.click();
-}
 init()

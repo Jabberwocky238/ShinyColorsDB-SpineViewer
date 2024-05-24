@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "pixi-spine": "^4.0.4",
-    "pixi.js": "^7.4.2"
+    "pixi.js": "^7.4.2",
+    "typescript": "^5.4.5"
   }
 }

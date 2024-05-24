@@ -1,5 +1,6 @@
-# ShinyColorsDB-SpineViewer
+# rewrite ShinyColorsDB-SpineViewer
 
-[demo Website](https://spine.shinycolors.moe)
+# thanks for ShinyColorsDB-SpineViewer
 
-![](https://i.imgur.com/XtXRzsd.png)
+[ShinyColorsDB-SpineViewer](https://github.com/ShinyColorsDB/ShinyColorsDB-SpineViewer)
+
