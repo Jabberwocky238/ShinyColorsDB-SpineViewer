@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <link rel="stylesheet" href="./style.css" />
+
+  <link rel="shortcut icon" href="./assets/favicon.ico" />
+  <link rel="bookmark" href="./assets/favicon.ico" />
+
+  <!-- <script src="https://pixijs.download/v7.4.2/pixi.min.js"></script>
+  <script src="https://pixijs.download/v7.4.2/pixi-legacy.min.js"></script>
+  <script src="./pixi-spine.js"></script> -->
+</head>
+
+<body>
+  <!-- <div id="app"></div> -->
+  <div class="container-fluid row m-0 p-0 vh-100 vw-100">
+    <div class="offcanvas offcanvas-start bg-secondary d-flex justify-content-center" id="divAnimation" tabindex="-1"
+      role="dialog" aria-labelledby="divAnimationLabel" aria-hidden="true" data-bs-backdrop="false">
+      <div class="offcanvas-header pt-2 pb-2">
+        <h5 class="offcanvas-title" id="divAnimationLabel">Animation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+          <span aria-hidden="false" class="text-primary"></span>
+        </button>
+      </div>
+      <div class="offcanvas-body pt-0">
+        <div class="row" id="divAnimationBody"></div>
+        <div class="container">
+          <button type="button" class="btn btn-danger w-100" id="resetAnimation">リセット</button>
+          <button type="button" class="btn btn-primary w-100" data-bs-toggle="offcanvas"
+            data-bs-target="#divAnimation">閉じる</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="d-flex flex-column bg-dark h-100 col-lg-3" id="divSidebar">
+      <span>Idol:</span>
+      <select id="idolList" class="form-select" aria-label="Default select example"></select>
+      <span>Dress:</span>
+      <select id="dressList" class="form-select" aria-label="Default select example"></select>
+      <span>Type:</span>
+      <select id="typeList" class="form-select" aria-label="Default select example"></select>
+      <span>Animation:</span>
+      <input type="button" class="btn btn-primary" id="animationList" value="AnimationList" data-bs-toggle="offcanvas"
+        data-bs-target="#divAnimation">
+
+
+      <span>Background Color:</span>
+      <input type="color" class="mb-3 form-control w-100" id="colorPicker" />
+    </div>
+    <div class="p-0 col-lg-9 d-flex">
+      <canvas id="canvas" width="1136" height="640" class="img-fluid"></canvas>
+    </div>
+
+  </div>
+  <script type="module" src="/index.js"></script>
+</body>
+
+</html>
