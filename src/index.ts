@@ -8,8 +8,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const cont = new PIXI.Container();
 
 // State
-let isContinuousShootingEnabled = false
-let app, spine, urlFlag = false;
+let app: PIXI.Application;
+let spine: Spine;
+let urlFlag = false;
 
 const idolMap = new Map();
 const spineMap = new Map();
@@ -26,7 +27,10 @@ async function init() {
         console.log('WebGL is not supported in this browser.');
         return
     }
-    const canvas = document.getElementById("canvas")
+    const canvasAnthor = document.querySelector("#canvasAnthor");
+    const canvas = document.createElement("canvas");
+    canvas.className = 'img-fluid'
+    canvasAnthor!.appendChild(canvas);
 
     app = new PIXI.Application({
         view: canvas,
@@ -35,10 +39,20 @@ async function init() {
     });
     app.stage.addChild(cont);
 
-
-    const colorPicker = document.getElementById("colorPicker");
+    const divSidebar = document.querySelector("#divSidebar");
+    const colorPickerLabel = document.createElement("span");
+    colorPickerLabel.innerHTML = "Background Color:"
+    divSidebar!.appendChild(colorPickerLabel);
+    
+    const colorPicker = document.createElement("input");
+    divSidebar!.appendChild(colorPicker);
+    colorPicker.type = "color";
+    colorPicker.id = "colorPicker"
+    colorPicker.className = "mb-3 form-control w-100"
     colorPicker.onchange = (event) => {
-        app.renderer.backgroundColor = String(event.target.value).replace(/#/, "0X");
+        if (event.target !== null){
+            app.renderer.backgroundColor = String(event.target.value).replace(/#/, "0X");
+        }
     };
 
     // fetch("https://api.shinycolors.moe/spine/idollist")
@@ -55,7 +69,17 @@ async function init() {
 }
 
 async function setupIdolList(idolInfo) {
-    const idolList = document.getElementById("idolList");
+    // const idolList = document.getElementById("idolList");
+    const divSidebar = document.querySelector("#divSidebar");
+    const idolListLabel = document.createElement("span");
+    idolListLabel.innerHTML = "Idol:"
+    divSidebar!.appendChild(idolListLabel);
+    const idolList = document.createElement("select");
+    idolList.className = 'form-select'
+    idolList.id = 'idolList'
+    divSidebar!.appendChild(idolList);
+
+
     let idolId = urlParams.has("idolId") ? Number(urlParams.get("idolId")) : 1;
     let idolName = idolInfo.get(idolId).idolName;
     idolList.innerHTML = "";
@@ -104,8 +128,16 @@ async function testAndLoadDress(idolId, idolName) {
 }
 
 async function setupDressList(idolDressList) {
-    const dressList = document.getElementById("dressList");
+    // const dressList = document.getElementById("dressList");
+    const divSidebar = document.querySelector("#divSidebar");
+    const dressListLabel = document.createElement("span");
+    dressListLabel.innerHTML = "Dress:"
+    divSidebar!.appendChild(dressListLabel);
+    const dressList = document.createElement("select");
+    dressList.className = 'form-select'
+    dressList.id = 'dressList'
     dressList.innerHTML = "";
+    divSidebar!.appendChild(dressList);
 
     let lastType = "P_SSR", optGroup = document.createElement("optgroup");
     optGroup.label = "P_SSR";
@@ -152,10 +184,19 @@ async function setupDressList(idolDressList) {
 }
 
 async function setupTypeList(dressObj) {
-    const typeList = document.getElementById("typeList");
-    let dressType;
-    typeList.innerHTML = "";
+    // const typeList = document.getElementById("typeList");
+    const divSidebar = document.querySelector("#divSidebar");
+    const typeListLabel = document.createElement("span");
+    typeListLabel.innerHTML = "Type:"
+    divSidebar!.appendChild(typeListLabel);
 
+    const typeList = document.createElement("select");
+    typeList.className = 'form-select'
+    typeList.id = 'typeList'
+    typeList.innerHTML = "";
+    divSidebar!.appendChild(typeList);
+
+    let dressType;
     let big0, big1, sml0, sml1;
     let flag_sml0 = false, flag_big0 = false,
         flag_sml1 = false, flag_big1 = false;
@@ -287,42 +328,40 @@ async function testAndLoadAnimation(enzaId, type, flag = false) {
     }
 }
 
-async function setupAnimationList(spineData) {
+async function setupAnimationList(texture) {
+    const divSidebar = document.querySelector("#divSidebar");
+    const animationListLabel = document.createElement("span");
+    animationListLabel.innerHTML = "Animation:"
+    divSidebar!.appendChild(animationListLabel);
+    
+    const animationList = document.createElement("select");
+    animationList.className = 'form-select'
+    animationList.id = 'animationList'
+    animationList.innerHTML = "";
+    divSidebar!.appendChild(animationList);
+
     const defaultAnimation = "wait";
     // let currentSpine = new PIXI.spine.Spine(spineData);
-    console.log(spineData)
-    spine = new Spine(spineData.spineData);
-    // spine.debug = new SpineDebugRenderer()
-    // Per feature toggle
-    // spine.debug.drawMeshHull = true;
-    // spine.debug.drawMeshTriangles = false;
-    // spine.debug.drawPaths = false;
-    // spine.debug.drawBoundingBoxes = false;
-    // spine.debug.drawClipping = true;
-    // spine.debug.drawRegionAttachments = true;
-    // To have even more control, you can customize the color and line thickness with
-    // spine.debug.lineWidth = 1;
-    // spine.debug.regionAttachmentsColor = 0x0078ff;
-    // spine.debug.meshHullColor = 0x0078ff;
-    // spine.debug.meshTrianglesColor = 0xffcc00;
-    // spine.debug.clippingPolygonColor = 0xff00ff;
-    // spine.debug.boundingBoxesRectColor = 0x00ff00;
-    // spine.debug.boundingBoxesPolygonColor = 0x00ff00;
-    // spine.debug.boundingBoxesCircleColor = 0x00ff00;
-    // spine.debug.pathsCurveColor = 0xff0000;
-    // spine.debug.pathsLineColor = 0xff00ff;
-    // spine.debug.skeletonXYColor = 0xff0000;
-    // spine.debug.bonesColor = 0x00eecc;
+    console.log(texture)
+    spine = new Spine(texture.spineData);
 
-    console.log("spine", spine)
+    spine.spineData.animations.forEach((animate, index) => {
+        let option = document.createElement("option");
+        animationList.appendChild(option);
+        option.textContent = animate.name;
+        option.setAttribute("value", index);
+        option.setAttribute("name", animate.name);
+    });
+
+    animationList.onchange = () => {
+        // console.log(animationList)
+        const selectedAnimationName = animationList.options[animationList.selectedIndex].getAttribute("name")
+        spine.state.setAnimation(0, selectedAnimationName!, true);
+    };
+
+    console.log("spine.spineData.animations", spine.spineData.animations)
     console.log("spine.spineData.bones", spine.spineData.bones)
 
-    spine.spineData.bones.forEach((bone) => {
-        if(bone.name == 'hip') {
-            console.log(bone)
-            bone.rotation = 0.1
-        }
-    })
     try {
         spine.skeleton.setSkinByName("normal");
     } catch (e) {
@@ -341,24 +380,9 @@ async function setupAnimationList(spineData) {
     // add the animation to the scene and render...
     app.stage.addChild(spine);
 
-
-    const btn = document.createElement("button");
-    btn.innerText = "debug";
-    btn.onclick = () => {
-        console.log(spine)
-    }
-    document.querySelector("#divSidebar").appendChild(btn);
-
     await renderToStage(spine);
 }
 
-function blobToBase64(blob) {
-    return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-    });
-}
 
 const clearState = (spine) => {
     spine.state.clearTracks();
@@ -368,7 +392,6 @@ const clearState = (spine) => {
 
 
 async function renderToStage(currentSpine) {
-    if (isContinuousShootingEnabled) { clearState(currentSpine) }
     cont.removeChild(cont.children[0]);
     cont.addChild(currentSpine);
 
@@ -395,7 +418,6 @@ async function renderToStage(currentSpine) {
     cont.pivot.set(contLocalBound.width / 2, contLocalBound.height / 2);
     cont.position.set(app.view.width / 2, app.view.height / 2);
 
-    if (isContinuousShootingEnabled) { await saveImage(); }
 }
 
 
