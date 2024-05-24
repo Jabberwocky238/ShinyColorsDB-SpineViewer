@@ -21,6 +21,8 @@ const migrateMap = {
     "big_cloth0": "stand",
     "big_cloth1": "stand_costume",
 }
+let relativeX = 0
+let relativeY = 0
 
 async function init() {
     if (!PIXI.utils.isWebGLSupported()) {
@@ -36,6 +38,7 @@ async function init() {
         view: canvas,
         width: canvas.clientWidth - 1,
         height: canvas.clientHeight - 1,
+        eventMode: 'dynamic',
     });
     app.stage.addChild(cont);
 
@@ -344,6 +347,18 @@ async function setupAnimationList(texture) {
     // let currentSpine = new PIXI.spine.Spine(spineData);
     console.log(texture)
     spine = new Spine(texture.spineData);
+
+    // spine.on('globalmousemove', (event) => { 
+    //     console.log(event);
+    //     relativeX = event.page.x - window.innerWidth / 2;
+    //     relativeY = event.page.y - window.innerHeight / 2;
+    //     console.log(relativeX, relativeY);
+    // });
+    app.ticker.add((delta) => {
+        // spine.spineData.bones[19].rotation += 0.01
+        // spine.spineData.bones[5].rotation += 0.01
+        // console.log(spine.spineData.bones[19].rotation)
+    })
 
     spine.spineData.animations.forEach((animate, index) => {
         let option = document.createElement("option");
